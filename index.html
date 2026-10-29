@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title id="doc-title">🌸 Kawaii Guild Hub</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        heading: ['Fredoka', 'cursive', 'sans-serif'],
+                        body: ['Nunito', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body { font-family: 'Nunito', sans-serif; }
+        h1, h2, h3, h4, .font-heading { font-family: 'Fredoka', cursive, sans-serif; }
+
+        .theme-pink {
+            --bg-grad: linear-gradient(135deg, #fff0f5 0%, #fae8ff 50%, #fce7f3 100%);
+            --card-bg: rgba(255, 255, 255, 0.85);
+            --card-border: #fbcfe8;
+            --primary: #ec4899;
+            --primary-hover: #db2777;
+        }
+        .theme-lavender {
+            --bg-grad: linear-gradient(135deg, #f3e8ff 0%, #e0e7ff 50%, #f5f3ff 100%);
+            --card-bg: rgba(255, 255, 255, 0.85);
+            --card-border: #ddd6fe;
+            --primary: #8b5cf6;
+            --primary-hover: #7c3aed;
+        }
+        .theme-mint {
+            --bg-grad: linear-gradient(135deg, #e6fffa 0%, #f0fdf4 50%, #ccfbf1 100%);
+            --card-bg: rgba(255, 255, 255, 0.85);
+            --card-border: #99f6e4;
+            --primary: #14b8a6;
+            --primary-hover: #0d9488;
+        }
+
+        .theme-container { background: var(--bg-grad); min-height: 100vh; }
+        .cute-card {
+            background: var(--card-bg);
+            border: 2px solid var(--card-border);
+            backdrop-filter: blur(12px);
+            box-shadow: 0 10px 25px -5px rgba(236, 72, 153, 0.1);
+        }
+        .cute-btn-primary {
+            background-color: var(--primary);
+            color: #ffffff;
+            box-shadow: 0 6px 16px -2px rgba(236, 72, 153, 0.3);
+        }
+        .cute-btn-primary:hover {
+            background-color: var(--primary-hover);
+            transform: translateY(-2px);
+        }
+
+        .editable-active {
+            outline: 2px dashed var(--primary) !important;
+            outline-offset: 4px;
+            cursor: pointer;
+            border-radius: 8px;
+        }
+        .editable-active:hover { background-color: rgba(236, 72, 153, 0.1) !important; }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-8px); }
+        }
+        .animate-float { animation: float 3s ease-in-out infinite; }
+    </style>
+</head>
+<body class="theme-pink theme-container text-slate-700 antialiased flex flex-col min-h-screen">
+
+    <!-- ADMIN BAR -->
+    <div id="admin-bar" class="bg-white/80 border-b border-pink-200 backdrop-blur px-4 py-2 text-xs flex flex-wrap items-center justify-between gap-2 shadow-sm">
+        <div class="flex items-center gap-2">
+            <span id="admin-status-badge" class="px-2.5 py-1 rounded-full font-bold bg-pink-100 text-pink-600">Visitor View 💕</span>
+            <span id="sync-status" class="text-slate-400 font-bold hidden sm:inline">● Synced Live</span>
+        </div>
+        <div class="flex items-center gap-3">
+            <button id="toggle-admin-btn" onclick="toggleAdminLogin()" class="cute-btn-primary font-bold px-3 py-1.5 rounded-full flex items-center gap-1.5 text-xs transition">
+                <i data-lucide="lock" class="w-3.5 h-3.5"></i>
+                <span id="admin-btn-text">Admin Login</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- NAVBAR -->
+    <nav class="max-w-6xl mx-auto w-full px-4 pt-6 space-y-3">
+        <div class="cute-card rounded-3xl px-6 py-4 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div class="w-12 h-12 rounded-2xl bg-gradient-to-tr from-pink-400 to-rose-400 flex items-center justify-center font-bold text-2xl text-white shadow-md animate-float">
+                    <span id="nav-initials">🌸</span>
+                </div>
+                <div>
+                    <h1 class="font-bold text-xl leading-tight text-slate-800 editable-field" data-key="guildName">Kawaii Squad</h1>
+                    <p class="text-xs font-semibold text-pink-500 editable-field" data-key="guildTagline">Gaming, Chilling & Raiding Together 💕</p>
+                </div>
+            </div>
+
+            <div class="hidden md:flex items-center gap-6 font-bold text-sm text-slate-600">
+                <a href="#owner" class="hover:text-pink-500 transition">Owner 👑</a>
+                <a href="#stats" class="hover:text-pink-500 transition">Overview ✨</a>
+                <a href="#events" class="hover:text-pink-500 transition">Events 📅</a>
+                <a href="#guestbook" class="hover:text-pink-500 transition">Guestbook 💬</a>
+                <a href="#apply" class="cute-btn-primary px-5 py-2.5 rounded-full transition text-xs font-bold">Apply Now 💕</a>
+            </div>
+        </div>
+
+        <div id="announcement-banner" class="bg-pink-100/90 border-2 border-pink-300 rounded-2xl px-5 py-2.5 text-xs font-bold text-pink-700 flex items-center justify-between shadow-sm">
+            <div class="flex items-center gap-2">
+                <span>📢</span>
+                <span class="editable-field" data-key="announcementText">Guild Announcement: Movie Night this Saturday at 20:00 UTC! Bring snacks! 🍿✨</span>
+            </div>
+            <button onclick="document.getElementById('announcement-banner').style.display='none'" class="text-pink-400 hover:text-pink-600">
+                <i data-lucide="x" class="w-4 h-4"></i>
+            </button>
+        </div>
+    </nav>
+
+    <!-- HERO HEADER -->
+    <header class="max-w-4xl mx-auto px-4 py-10 text-center relative">
+        <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-pink-100/80 border border-pink-200 text-pink-600 text-xs font-bold mb-6 shadow-sm">
+            <span>✨</span>
+            <span class="editable-field" data-key="heroBadge">Season 2 Open Recruitment</span>
+            <span>✨</span>
+        </div>
+        
+        <h1 class="text-4xl sm:text-6xl font-bold tracking-tight text-slate-800 mb-4 editable-field" data-key="heroTitle">
+            Welcome to Our Cute Gaming Hub! 🌸
+        </h1>
+        
+        <p class="text-base sm:text-lg text-slate-600 max-w-2xl mx-auto mb-8 font-semibold editable-field" data-key="heroSubtitle">
+            A cozy, friendly gaming community built for epic adventures, fun raid nights, and making awesome lifelong friends! 🎮💖
+        </p>
+
+        <div class="flex flex-wrap items-center justify-center gap-4 mb-6">
+            <a href="#apply" class="cute-btn-primary font-bold px-7 py-3.5 rounded-2xl text-sm transition flex items-center gap-2">
+                <i data-lucide="heart" class="w-4 h-4"></i>
+                Join Our Family
+            </a>
+            <button onclick="copyIP()" class="bg-white border-2 border-pink-200 hover:border-pink-300 text-slate-700 font-bold px-6 py-3.5 rounded-2xl text-sm transition flex items-center gap-2 shadow-sm">
+                <i data-lucide="copy" class="w-4 h-4 text-pink-500"></i>
+                Copy Server IP
+            </button>
+            <button onclick="sendLove()" class="bg-gradient-to-r from-pink-400 to-rose-400 text-white font-bold px-6 py-3.5 rounded-2xl text-sm transition flex items-center gap-2 shadow-md hover:scale-105">
+                <span id="heart-btn">💖</span> <span id="love-count">128</span> Loves!
+            </button>
+        </div>
+    </header>
+
+    <!-- MAIN CONTENT -->
+    <main class="max-w-6xl mx-auto px-4 py-4 flex-1 w-full space-y-10">
+
+        <!-- NEW: GUILD OWNER / LEADER PROFILE CARD -->
+        <section id="owner" class="cute-card rounded-3xl p-6 relative overflow-hidden bg-gradient-to-r from-pink-100/80 via-purple-100/50 to-pink-50 border-pink-300">
+            <div class="flex flex-col md:flex-row items-center justify-between gap-6">
+                <div class="flex flex-col sm:flex-row items-center gap-5 text-center sm:text-left">
+                    <div class="w-20 h-20 rounded-3xl bg-gradient-to-br from-pink-400 to-purple-500 flex items-center justify-center text-4xl shadow-md border-4 border-white animate-float">
+                        👑
+                    </div>
+                    <div>
+                        <div class="flex items-center justify-center sm:justify-start gap-2 mb-1">
+                            <span class="bg-pink-500 text-white text-[10px] font-bold px-2.5 py-0.5 rounded-full uppercase tracking-wider">Guild Founder & Leader</span>
+                            <span class="bg-emerald-100 text-emerald-600 text-[10px] font-bold px-2.5 py-0.5 rounded-full flex items-center gap-1">● Online</span>
+                        </div>
+                        <h2 class="text-2xl font-bold text-slate-800 editable-field" data-key="ownerName">Angela / Wick 🌸</h2>
+                        <p class="text-xs text-slate-600 font-semibold max-w-md mt-1 editable-field" data-key="ownerBio">
+                            Hey everyone! Welcome to our guild hub. Feel free to apply or drop a message on our guestbook below! 💕
+                        </p>
+                    </div>
+                </div>
+
+                <!-- DIRECT OWNER CREDENTIALS -->
+                <div class="flex flex-col gap-2 w-full md:w-auto shrink-0">
+                    <div class="bg-white/90 border border-pink-200 px-4 py-2 rounded-2xl flex items-center justify-between gap-3 shadow-sm">
+                        <span class="text-xs font-bold text-slate-500 flex items-center gap-1.5"><i data-lucide="message-square" class="w-3.5 h-3.5 text-indigo-500"></i> Discord:</span>
+                        <code class="text-xs font-extrabold text-pink-600 bg-pink-50 px-2 py-0.5 rounded-lg border border-pink-100">ttvemh4r</code>
+                    </div>
+                    <div class="bg-white/90 border border-pink-200 px-4 py-2 rounded-2xl flex items-center justify-between gap-3 shadow-sm">
+                        <span class="text-xs font-bold text-slate-500 flex items-center gap-1.5"><i data-lucide="gamepad-2" class="w-3.5 h-3.5 text-emerald-500"></i> Minecraft:</span>
+                        <code class="text-xs font-extrabold text-purple-600 bg-purple-50 px-2 py-0.5 rounded-lg border border-purple-100">angelaWick</code>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- MASCOT INTERACTIVE GAME -->
+        <section class="cute-card rounded-3xl p-6 flex flex-col md:flex-row items-center justify-between gap-6 bg-gradient-to-r from-pink-50 to-purple-50 border-pink-200">
+            <div class="flex items-center gap-4">
+                <div class="text-5xl cursor-pointer hover:scale-125 transition transform" onclick="clickMochi()" title="Click me to gain points!">🐱</div>
+                <div>
+                    <h3 class="font-bold text-slate-800 text-base">Mochi Clicker Game 🐾</h3>
+                    <p id="mochi-status" class="text-xs text-pink-600 font-bold">Click Mochi to collect treats! Treats collected: <span id="treat-count" class="text-slate-800 font-black">0</span></p>
+                </div>
+            </div>
+            <button onclick="clickMochi()" class="bg-white border-2 border-pink-200 text-pink-600 font-bold px-4 py-2 rounded-2xl text-xs shadow-sm hover:bg-pink-100 transition">
+                Pet Mochi ✨
+            </button>
+        </section>
+
+        <!-- STATS CARDS -->
+        <section id="stats">
+            <div class="flex items-center justify-between mb-4">
+                <div>
+                    <h2 class="text-2xl font-bold text-slate-800 editable-field" data-key="statsHeading">Guild Highlights ✨</h2>
+                    <p class="text-slate-500 text-xs font-semibold editable-field" data-key="statsSubheading">Our live server stats and member progress!</p>
+                </div>
+                <button id="add-stat-btn" onclick="openStatModal()" class="hidden bg-white hover:bg-pink-50 border-2 border-pink-200 text-pink-600 text-xs font-bold px-3 py-2 rounded-xl flex items-center gap-1 transition">
+                    <i data-lucide="plus" class="w-4 h-4"></i> Add Metric
+                </button>
+            </div>
+            <div id="stats-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4"></div>
+        </section>
+
+        <!-- EVENTS & RULES -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <section id="events" class="lg:col-span-2 space-y-4">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h2 class="text-2xl font-bold text-slate-800 editable-field" data-key="eventsHeading">Upcoming Events 📅</h2>
+                        <p class="text-slate-500 text-xs font-semibold editable-field" data-key="eventsSubheading">Check out when we play together!</p>
+                    </div>
+                    <button id="add-event-btn" onclick="openEventModal()" class="hidden cute-btn-primary text-xs font-bold px-3 py-2 rounded-xl flex items-center gap-1 transition">
+                        <i data-lucide="plus" class="w-4 h-4"></i> Add Event
+                    </button>
+                </div>
+                <div id="events-list" class="space-y-3"></div>
+            </section>
+
+            <section id="rules" class="space-y-4">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h2 class="text-2xl font-bold text-slate-800 editable-field" data-key="rulesHeading">Community Guidelines 📜</h2>
+                        <p class="text-slate-500 text-xs font-semibold editable-field" data-key="rulesSubheading">Keep things cozy & fun!</p>
+                    </div>
+                    <button id="add-rule-btn" onclick="openRuleModal()" class="hidden bg-white border-2 border-pink-200 text-pink-600 text-xs font-bold px-3 py-2 rounded-xl flex items-center gap-1 transition">
+                        <i data-lucide="plus" class="w-4 h-4"></i> Add Rule
+                    </button>
+                </div>
+                <div class="cute-card rounded-3xl p-5">
+                    <ul id="rules-list" class="space-y-3"></ul>
+                </div>
+            </section>
+        </div>
+
+        <!-- NEW: PUBLIC COMMUNITY GUESTBOOK / WALL -->
+        <section id="guestbook" class="cute-card rounded-3xl p-6">
+            <h2 class="text-2xl font-bold text-slate-800 mb-1">Community Guestbook 💬</h2>
+            <p class="text-slate-500 text-xs font-semibold mb-4">Leave a cute message or note for Angela & the guild!</p>
+            
+            <form onsubmit="postGuestbookMessage(event)" class="flex flex-col sm:flex-row gap-3 mb-6">
+                <input type="text" id="gb-author" required placeholder="Your Name / Tag" class="bg-white border-2 border-pink-200 rounded-2xl px-4 py-2.5 text-xs font-semibold sm:w-1/3 focus:outline-none focus:border-pink-400">
+                <input type="text" id="gb-msg" required placeholder="Write a message..." class="bg-white border-2 border-pink-200 rounded-2xl px-4 py-2.5 text-xs font-semibold flex-1 focus:outline-none focus:border-pink-400">
+                <button type="submit" class="cute-btn-primary px-5 py-2.5 rounded-2xl text-xs font-bold shrink-0">Post Note 💕</button>
+            </form>
+
+            <div id="guestbook-list" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3"></div>
+        </section>
+
+        <!-- APPLICATION FORM -->
+        <section id="apply" class="cute-card rounded-3xl p-8 max-w-2xl mx-auto relative overflow-hidden">
+            <div class="text-center mb-6">
+                <h2 class="text-3xl font-bold text-slate-800 mb-1 editable-field" data-key="formHeading">Join Our Guild 💕</h2>
+                <p class="text-slate-500 text-xs font-semibold editable-field" data-key="formSubheading">Fill out this cute application form to get started!</p>
+            </div>
+
+            <form id="app-form" onsubmit="handleAppSubmit(event)" class="space-y-4">
+                <div>
+                    <label class="block text-xs font-bold uppercase text-slate-500 mb-1">In-Game Name / Tag 💕</label>
+                    <input type="text" id="app-name" required placeholder="e.g. CutiePie#1234" class="w-full bg-white/90 border-2 border-pink-200 rounded-2xl px-4 py-3 text-sm focus:outline-none focus:border-pink-400 transition">
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-bold uppercase text-slate-500 mb-1">Role / Specialty ⚔️</label>
+                        <input type="text" id="app-class" required placeholder="e.g. Healer / Support" class="w-full bg-white/90 border-2 border-pink-200 rounded-2xl px-4 py-3 text-sm focus:outline-none focus:border-pink-400 transition">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold uppercase text-slate-500 mb-1">Discord Tag 💬</label>
+                        <input type="text" id="app-discord" required placeholder="e.g. cutie_player" class="w-full bg-white/90 border-2 border-pink-200 rounded-2xl px-4 py-3 text-sm focus:outline-none focus:border-pink-400 transition">
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-xs font-bold uppercase text-slate-500 mb-1">About You 💕</label>
+                    <textarea id="app-experience" rows="3" required placeholder="Tell us why you'd like to join our community..." class="w-full bg-white/90 border-2 border-pink-200 rounded-2xl px-4 py-3 text-sm focus:outline-none focus:border-pink-400 transition"></textarea>
+                </div>
+                <button type="submit" class="w-full cute-btn-primary font-bold py-3.5 rounded-2xl transition flex items-center justify-center gap-2">
+                    <i data-lucide="send" class="w-4 h-4"></i> Submit Application
+                </button>
+            </form>
+        </section>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="border-t border-pink-200 bg-white/50 py-6 text-center text-xs font-semibold text-slate-500">
+        <p>© 2026 <span class="editable-field" data-key="guildName">Kawaii Squad</span> Hub • Founded by Angela (ttvemh4r / angelaWick) 💕</p>
+    </footer>
+
+    <script>
+        const BIN_ID = "66123abcdef456789"; 
+        const API_KEY = "$2a$10$pL3O.h1vVfJp0vU2G4n7uO3/H6O.sKkZl3L"; 
+
+        const DEFAULT_DATA = {
+            theme: "theme-pink",
+            loves: 128,
+            treats: 0,
+            texts: {
+                guildName: "Kawaii Squad",
+                guildTagline: "Gaming, Chilling & Raiding Together 💕",
+                announcementText: "Guild Announcement: Movie Night this Saturday at 20:00 UTC! Bring snacks! 🍿✨",
+                heroBadge: "Season 2 Open Recruitment",
+                heroTitle: "Welcome to Our Cute Gaming Hub! 🌸",
+                heroSubtitle: "A cozy, friendly gaming community built for epic adventures, fun raid nights, and making awesome lifelong friends! 🎮💖",
+                ownerName: "Angela / Wick 🌸",
+                ownerBio: "Hey everyone! Welcome to our guild hub. Feel free to apply or drop a message on our guestbook below! 💕",
+                statsHeading: "Guild Highlights ✨",
+                statsSubheading: "Our live server stats and member progress!",
+                eventsHeading: "Upcoming Events 📅",
+                eventsSubheading: "Check out when we play together!",
+                rulesHeading: "Community Guidelines 📜",
+                rulesSubheading: "Keep things cozy & fun!",
+                formHeading: "Join Our Guild 💕",
+                formSubheading: "Fill out this cute application form to get started!"
+            },
+            stats: [
+                { id: "1", label: "Realm Status 🌸", value: "Online & Happy" },
+                { id: "2", label: "Cute Members 💕", value: "128 Cuties" },
+                { id: "3", label: "Raid Progress ⚔️", value: "8/8 Cleared!" },
+                { id: "4", label: "Recruitment 💌", value: "Open for All" }
+            ],
+            events: [
+                { id: "1", title: "Friday Party Raid Night 🎉", date: "Friday @ 20:00 UTC", tag: "Raid" },
+                { id: "2", title: "Weekend Mini Game Tournament 🏆", date: "Saturday @ 18:00 UTC", tag: "Games" }
+            ],
+            rules: [
+                { id: "1", text: "Spread kindness and treat everyone with love and respect 💕" },
+                { id: "2", text: "No toxicity or harassment allowed in our cozy space 🌸" }
+            ],
+            guestbook: [
+                { author: "Luna_Moon", msg: "Love this guild hub so much! 🌸✨" },
+                { author: "Shadow_Fox", msg: "Ready for the weekend raids! ⚔️" }
+            ]
+        };
+
+        let appData = JSON.parse(localStorage.getItem('kawaiiGuildData')) || DEFAULT_DATA;
+        let isAdmin = false;
+
+        async function syncToCloud() {
+            localStorage.setItem('kawaiiGuildData', JSON.stringify(appData));
+            try {
+                await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json', 'X-Master-Key': API_KEY },
+                    body: JSON.stringify(appData)
+                });
+            } catch (err) {}
+        }
+
+        async function fetchCloudData() {
+            try {
+                const res = await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}/latest`, {
+                    headers: { 'X-Master-Key': API_KEY }
+                });
+                if (res.ok) {
+                    const result = await res.json();
+                    if (result.record && result.record.texts) {
+                        appData = result.record;
+                        localStorage.setItem('kawaiiGuildData', JSON.stringify(appData));
+                        renderAll();
+                    }
+                }
+            } catch (err) {}
+        }
+
+        document.addEventListener("DOMContentLoaded", () => {
+            renderAll();
+            setupInlineEditors();
+            fetchCloudData();
+            setInterval(fetchCloudData, 2000);
+        });
+
+        function renderAll() {
+            document.body.className = `${appData.theme || 'theme-pink'} theme-container text-slate-700 antialiased flex flex-col min-h-screen`;
+
+            document.querySelectorAll('.editable-field').forEach(el => {
+                const key = el.dataset.key;
+                if (appData.texts[key]) el.innerText = appData.texts[key];
+            });
+
+            document.title = appData.texts.guildName || "Kawaii Guild Hub";
+            document.getElementById('nav-initials').innerText = (appData.texts.guildName || "🌸")[0];
+            document.getElementById('love-count').innerText = appData.loves || 128;
+            document.getElementById('treat-count').innerText = appData.treats || 0;
+
+            renderStats();
+            renderEvents();
+            renderRules();
+            renderGuestbook();
+            lucide.createIcons();
+        }
+
+        function setupInlineEditors() {
+            document.querySelectorAll('.editable-field').forEach(el => {
+                el.addEventListener('click', (e) => {
+                    if (!isAdmin) return;
+                    e.preventDefault();
+                    const key = el.dataset.key;
+                    const newValue = prompt(`Edit text for [${key}]:`, appData.texts[key] || el.innerText);
+                    if (newValue !== null && newValue.trim() !== "") {
+                        appData.texts[key] = newValue.trim();
+                        renderAll();
+                        syncToCloud();
+                    }
+                });
+            });
+        }
+
+        function renderStats() {
+            document.getElementById('stats-grid').innerHTML = appData.stats.map(s => `
+                <div class="cute-card rounded-3xl p-5 relative group">
+                    <span class="text-xs font-bold text-slate-400 uppercase tracking-wider block mb-1">${escapeHtml(s.label)}</span>
+                    <span class="text-xl font-bold text-slate-800 block">${escapeHtml(s.value)}</span>
+                </div>
+            `).join('');
+        }
+
+        function renderEvents() {
+            document.getElementById('events-list').innerHTML = appData.events.map(e => `
+                <div class="cute-card rounded-3xl p-4 flex items-center justify-between gap-4">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-2xl bg-pink-100 border border-pink-200 flex items-center justify-center text-pink-500 font-bold">🌸</div>
+                        <div>
+                            <div class="flex items-center gap-2 mb-0.5">
+                                <span class="text-xs font-bold px-2.5 py-0.5 rounded-full bg-pink-100 text-pink-600">${escapeHtml(e.tag || 'Event')}</span>
+                                <span class="text-xs font-semibold text-slate-400">${escapeHtml(e.date)}</span>
+                            </div>
+                            <h3 class="font-bold text-slate-800 text-sm">${escapeHtml(e.title)}</h3>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function renderRules() {
+            document.getElementById('rules-list').innerHTML = appData.rules.map((r, idx) => `
+                <li class="flex items-center gap-2 text-xs font-semibold text-slate-600">
+                    <span class="font-bold text-pink-500">${idx + 1}.</span>
+                    <span>${escapeHtml(r.text)}</span>
+                </li>
+            `).join('');
+        }
+
+        function renderGuestbook() {
+            const list = document.getElementById('guestbook-list');
+            if (!appData.guestbook) appData.guestbook = [];
+            list.innerHTML = appData.guestbook.map(g => `
+                <div class="bg-white/80 border border-pink-200 rounded-2xl p-3 shadow-sm">
+                    <span class="font-bold text-xs text-pink-600 block">${escapeHtml(g.author)}</span>
+                    <p class="text-xs font-semibold text-slate-600 mt-0.5">${escapeHtml(g.msg)}</p>
+                </div>
+            `).join('');
+        }
+
+        function postGuestbookMessage(e) {
+            e.preventDefault();
+            const author = document.getElementById('gb-author').value;
+            const msg = document.getElementById('gb-msg').value;
+            if(!appData.guestbook) appData.guestbook = [];
+            appData.guestbook.unshift({ author, msg });
+            renderGuestbook();
+            syncToCloud();
+            document.getElementById('gb-msg').value = '';
+        }
+
+        function clickMochi() {
+            appData.treats = (appData.treats || 0) + 1;
+            document.getElementById('treat-count').innerText = appData.treats;
+            syncToCloud();
+        }
+
+        function sendLove() {
+            appData.loves = (appData.loves || 128) + 1;
+            document.getElementById('love-count').innerText = appData.loves;
+            syncToCloud();
+        }
+
+        function toggleAdminLogin() {
+            if (isAdmin) {
+                isAdmin = false;
+            } else {
+                const pass = prompt("Enter Admin Passcode:");
+                if (pass === "admin123") {
+                    isAdmin = true;
+                } else if (pass !== null) {
+                    alert("Incorrect passcode!");
+                }
+            }
+            updateAdminUI();
+        }
+
+        function updateAdminUI() {
+            document.getElementById('admin-status-badge').innerText = isAdmin ? "Admin Mode Active ✨" : "Visitor View 💕";
+            document.getElementById('admin-btn-text').innerText = isAdmin ? "Exit Admin" : "Admin Login";
+            document.querySelectorAll('.editable-field').forEach(el => el.classList.toggle('editable-active', isAdmin));
+            renderAll();
+        }
+
+        function copyIP() {
+            navigator.clipboard.writeText("play.kawaiisquad.com");
+            alert("Server IP copied to clipboard! play.kawaiisquad.com 💕");
+        }
+
+        function escapeHtml(str) {
+            return str ? str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;") : '';
+        }
+    </script>
+</body>
+</html>
